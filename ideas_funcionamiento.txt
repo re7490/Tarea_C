@@ -1,0 +1,26 @@
+"mostrar en pantalla todo"
+Indicar nivel, enemigos vivos, arsenal y municion
+Crear tablero
+Mostrar tablero con enemigos y el Rey (dispuestos de forma aleatoria, los peones pueden aparecer en linea 1 y 2 superior)
+Mostrar entradas validas e indicar q hacen (solo con armas)
+Pedir Input
+Recibir Input, letra o num, si es Valido se efectua o pide otro (arma), Invalido: indica q es invalido y pide otra vez sin avanzar turno
+    Si es mov -> funcion movimiento, donde se evaluara si puede o no ir en esa direccion (si no puede, no consume turno e indica y pide otra Input) y se recargara la escopeta
+    Si es arma -> funcion del arma, se evaluara si tiene balas (si no tiene lo indica y pide otro input) y pedira una direccion
+        Escopeta: ataque forma cono (4 casillas de largo), Sniper: rango infinito en linea recta (no atraviesa), Granada: area 3x3 puede lanzarse hasta 3 casillas en linea recta
+Se efectua la accion
+    Si fue mov, se mueve el rey y termina turno
+    Si fue arma, se evaluara a que piezas ataco el arma, se les quitara vida y/o eliminara del tablero, y termina turno
+Movimiento enemigos (se acercan al rey por la ruta mas corta)
+    SE DEBE MANEJAR COLISIONES
+    Torres cada dos turnos se mueven, Torre y Alfil se mueven maximo 3 casillas
+    Reina se mueve max 4 casillas
+    Peon ataca recto y diagonal
+    Si alguna pieza hace jaque al Rey == GGs
+Se actualiza el tablero con: movimiento rey o actualizar municion, se quitan enemigos muertos y los vivos cambian de posicion
+----------------------------------------------------
+Mueren todos los enemigos == siguiente nivel
+Se borra tablero y se crea el nuevo 
+SE APLICA TODO LO ANTERIOR
+
+Cuando se llegue al nivel 3, basta con que muera la reina y se gana el juego
