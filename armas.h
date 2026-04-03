@@ -1,7 +1,10 @@
 #ifndef ARMAS_H
 #define ARMAS_H
 
+#include <stdbool.h>
+
 struct Juego; /* Forward declaration */
+
 typedef bool (*FuncArma)(struct Juego *j, int dir_x, int dir_y); /* Puntero a funcion */
 
 typedef struct {

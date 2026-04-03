@@ -3,11 +3,11 @@
 #include <stdbool.h>
 #include "tablero.h"
 #include "piezas.h"
-#include "main.h"
 #include "armas.h"
+#include "main.h"
 
 
-struct Tablero* tablero_crear(int ancho, int alto){
+Tablero* tablero_crear(int ancho, int alto){
     if (ancho <= 0 || alto <= 0) return NULL; //Tamaño inválido
     Tablero* tabla = (Tablero*)malloc(sizeof(Tablero));
     if (!tabla) return NULL;
@@ -53,15 +53,43 @@ void tablero_imprimir(struct Juego *juego){
             );
     printf("=====================================================\n");
     for (int y = 0; y < t->H; y++){
-        
+        printf("%2d ", t->H - y); // num filas
+        for (int x = 0; x < t->W; x++){
+            // void* a Celda* para acceder a la pieza
+            Celda* c = (Celda*)t->celdas[y][x];
+            if (c && c->pieza) {
+                printf("[%c]", c->pieza->tipo);
+            } else {
+                printf("[ ]");
+            }
+        }
+        printf("\n");
     }
-
-
+    // Eje X
+    printf("   ");
+    for (int x = 1; x <= t->W; x++) printf(" %d ", x);
+    printf("\n");
 
 };
 
 
 void tablero_liberar(struct Tablero *tablero){
+    if (!tablero) return;
 
+    if (tablero->celdas) {
+        for (int y = 0; y < tablero->H; y++) {
+            if (!tablero->celdas[y]) continue;
 
+            for (int x = 0; x < tablero->W; x++) {
+                Celda* c = (Celda*)tablero->celdas[y][x];
+                if (c){
+                    free(c);
+                    tablero->celdas[y][x] = NULL;
+                }
+            }
+            free(tablero->celdas[y]);
+            tablero->celdas = NULL;
+        }
+    }
+    free(tablero);
 }; /* debe limpiar la memoria heap */

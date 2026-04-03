@@ -1,6 +1,10 @@
 #ifndef MAIN_H
 #define MAIN_H
 
+#include "tablero.h"
+#include "armas.h"
+#include "piezas.h"
+
 typedef struct {
     Tablero *t;
     Armas arsenal;

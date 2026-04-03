@@ -1,6 +1,11 @@
 #ifndef PIEZAS_H
 #define PIEZAS_H
 
+#include <stdbool.h>
+
+struct Juego;
+
+
 typedef struct {
     char tipo; /* ’P’=Peon, ’C’=Caballo, ’A’=Alfil, ’T’=Torre, ’Q’=Reina, ’R’=Rey */
     int hp;
