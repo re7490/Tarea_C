@@ -25,7 +25,7 @@ sudo apt install build-essential
 Eso instalara lo necesario para ejecutar el programa.
 Una vez eso listo, ejecute:
 make
-./space_defender
+./rey_destronado
 
 ------------------------------------------------------------------------------------------------------------
 Consideraciones, arma especial y manejo de colisiones

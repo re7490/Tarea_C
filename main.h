@@ -5,7 +5,7 @@
 #include "armas.h"
 #include "piezas.h"
 
-typedef struct {
+typedef struct Juego{
     Tablero *t;
     Armas arsenal;
     Pieza *jugador; /* El Rey */

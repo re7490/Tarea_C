@@ -3,7 +3,7 @@
 
 struct Juego;
 
-typedef struct {
+typedef struct Tablero{
     int W, H;
     void ***celdas; /* celdas[y][x] apunta a Celda* */
 } Tablero;

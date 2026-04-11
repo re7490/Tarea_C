@@ -24,3 +24,29 @@ Se borra tablero y se crea el nuevo
 SE APLICA TODO LO ANTERIOR
 
 Cuando se llegue al nivel 3, basta con que muera la reina y se gana el juego
+
+PRIMORDIAL y LO PRIMERO:
+✅✅✅✅✅✅ 
+- Crear 1er Tablero 7
+- Rey 7
+- Spawn aleatorio Rey 7
+- Mov Rey 
+- Borrar Tablero 7
+- Funcionamiento Armas 
+    - Escopeta y su recarga 7
+    - Arma especial 
+    - Sniper y Granada 7 7
+- Enemigos:
+    - Peon 
+    - Caballo 
+    - Torre y Alfil 
+    - Reina 
+- Spawn Aleatorio Enemigos 
+    - Peones en 2da fila 
+    - Demas en 1ra fila 
+- Mov Enemigos 
+    - Manejar colisiones: prioridad de mov 
+- Daño de armas a enemigos 
+- Eliminacion enemigos 
+- Pasar de nivel 
+- Crear Tablero nuevo 

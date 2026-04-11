@@ -7,32 +7,36 @@
 #include "main.h"
 
 
-Tablero* tablero_crear(int ancho, int alto){
+struct Tablero* tablero_crear(int ancho, int alto){
     if (ancho <= 0 || alto <= 0) return NULL; //Tamaño inválido
-    Tablero* tabla = (Tablero*)malloc(sizeof(Tablero));
-    if (!tabla) return NULL;
+    
+    Tablero* tablero = (Tablero*)malloc(sizeof(Tablero));
+    if (!tablero) return NULL;
 
-    tabla->W = ancho;
-    tabla->H = alto;
-    tabla->celdas = (void***)malloc(alto*sizeof(void**));
-    if (!tabla->celdas) {
-        free(tabla);
+    tablero->W = ancho;
+    tablero->H = alto;
+    tablero->celdas = (void***)malloc(alto * sizeof(void**));
+
+    if (!tablero->celdas) {
+        free(tablero);
         return NULL;
     }
 
     for(int y = 0; y < alto; y++){
-        tabla->celdas[y] = (void**)malloc((size_t)ancho * sizeof(void*));
-        if (!tabla->celdas[y]){
-            for (int i = 0; i< y; i++) free(tabla->celdas[i]);
-            free(tabla->celdas);
-            free(tabla);
+        tablero->celdas[y] = (void**)malloc((size_t)ancho * sizeof(void*));
+        if (!tablero->celdas[y]){
+            for (int i = 0; i< y; i++) free(tablero->celdas[i]);
+            free(tablero->celdas);
+            free(tablero);
             return NULL;
         }
         for (int x = 0; x<ancho; x++){
-            tabla->celdas[y][x] = NULL;
+            Celda* c = (Celda*)malloc(sizeof(Celda));
+            c->pieza = NULL; // Inicialmente vacía
+            tablero->celdas[y][x] = c;
         }
     }
-    return tabla;
+    return tablero;
 }
 void tablero_imprimir(struct Juego *juego){
     if (!juego || !juego->t) return;
@@ -54,42 +58,47 @@ void tablero_imprimir(struct Juego *juego){
     printf("=====================================================\n");
     for (int y = 0; y < t->H; y++){
         printf("%2d ", t->H - y); // num filas
+
         for (int x = 0; x < t->W; x++){
-            // void* a Celda* para acceder a la pieza
+            // de void* a Celda* para acceder a la pieza
             Celda* c = (Celda*)t->celdas[y][x];
-            if (c && c->pieza) {
-                printf("[%c]", c->pieza->tipo);
-            } else {
+            if (c->pieza == NULL) {
                 printf("[ ]");
+            } else {
+                printf("[%c]", c->pieza->tipo);
             }
         }
         printf("\n");
     }
     // Eje X
     printf("   ");
-    for (int x = 1; x <= t->W; x++) printf(" %d ", x);
+    for (int x = 0; x < t->W; x++) printf(" %d ", x + 1);
     printf("\n");
 
 };
 
 
-void tablero_liberar(struct Tablero *tablero){
-    if (!tablero) return;
+void tablero_liberar(struct Tablero *tablero) {
+    if (!tablero || !tablero->celdas) return;
 
-    if (tablero->celdas) {
-        for (int y = 0; y < tablero->H; y++) {
-            if (!tablero->celdas[y]) continue;
-
+    for (int y = 0; y < tablero->H; y++) {
+        if (tablero->celdas[y]) {
             for (int x = 0; x < tablero->W; x++) {
                 Celda* c = (Celda*)tablero->celdas[y][x];
-                if (c){
+                if (c) {
+                    // IMPORTANTE: Si la celda tiene una pieza, hay que liberarla primero
+                    if (c->pieza != NULL) {
+                        free(c->pieza); 
+                    }
                     free(c);
-                    tablero->celdas[y][x] = NULL;
                 }
             }
+            // Liberamos el arreglo de punteros de la fila (void **)
             free(tablero->celdas[y]);
-            tablero->celdas = NULL;
         }
     }
-    free(tablero);
-}; /* debe limpiar la memoria heap */
+    // Liberamos el arreglo de filas (void ***) fuera del bucle
+    free(tablero->celdas);
+    
+    // Si pasaste el struct Juego, no olvides liberar el puntero al tablero al final en el main
+} /* debe limpiar la memoria heap */
