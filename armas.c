@@ -130,17 +130,17 @@ bool especial(struct Juego *j, int dir_x, int dir_y){return false;}; /* Se puede
 
 void inicializar_armas(Juego *j) {
     // Escopeta
-    j->arsenal.municion_maxima[0] = 2; [cite: 47]
+    j->arsenal.municion_maxima[0] = 2;
     j->arsenal.municion_actual[0] = 2;
     j->arsenal.disparar[0] = escopeta;
 
     // Sniper
-    j->arsenal.municion_maxima[1] = 1; [cite: 51]
+    j->arsenal.municion_maxima[1] = 1;
     j->arsenal.municion_actual[1] = 1;
     j->arsenal.disparar[1] = francotirador;
 
     // Granada
-    j->arsenal.municion_maxima[2] = 2; [cite: 54]
+    j->arsenal.municion_maxima[2] = 2;
     j->arsenal.municion_actual[2] = 2;
     j->arsenal.disparar[2] = granada;
 
