@@ -1,16 +1,203 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <math.h>
 #include "piezas.h"
 #include "piezas.h"
 #include "armas.h"
 #include "main.h"
 
-void spawn_nivel(struct Juego *juego, int nivel){return;};
+void spawn_nivel(struct Juego *juego, int nivel) {
+    Tablero *t = juego->t;
+    int peones = 0, caballos = 0, alfiles = 0, torres = 0, reinas = 0;
+
+    // config nivel
+    if (nivel == 1) { peones = 4; caballos = 2; alfiles = 2; }
+    else if (nivel == 2) { peones = 4; caballos = 2; torres = 2; }
+    else if (nivel == 3) { peones = 2; reinas = 1; alfiles = 1; torres = 1; }
+
+    juego->enemigos_vivos = peones + caballos + alfiles + torres + reinas;
+
+    char tipos[] = {'P', 'C', 'A', 'T', 'Q'};
+    int cantidades[] = {peones, caballos, alfiles, torres, reinas};
+    int hps[] = {1, 2, 2, 4, 3}; // vida
+
+    for (int i = 0; i < 5; i++) {
+        for (int j = 0; j < cantidades[i]; j++) {
+            Pieza *p = (Pieza *)malloc(sizeof(Pieza));
+            p->tipo = tipos[i];
+            p->hp = hps[i];
+            p->movido = false;
+            
+            int x, y;
+            // Peones fila 2, Especiales fila 1
+            y = (p->tipo == 'P') ? 1 : 0;
+            
+            // buscar casilla vacia random en fila
+            do {
+                x = rand() % t->W;
+            } while (((Celda *)t->celdas[y][x])->pieza != NULL);
+
+            p->x = x;
+            p->y = y;
+            ((Celda *)t->celdas[y][x])->pieza = p;
+        }
+    }
+}
 
 
-void mover_enemigos(struct Juego *juego){return;};
+void mover_enemigos(struct Juego *juego) {
+    Tablero *t = juego->t;
 
+    // 1. Limpiar flags de movimiento al inicio del turno
+    for (int y = 0; y < t->H; y++) {
+        for (int x = 0; x < t->W; x++) {
+            Celda *c = (Celda *)t->celdas[y][x];
+            if (c->pieza) c->pieza->movido = false;
+        }
+    }
+
+    for (int y = 0; y < t->H; y++) {
+        for (int x = 0; x < t->W; x++) {
+            Celda *c = (Celda *)t->celdas[y][x];
+            Pieza *p = c->pieza;
+
+            // Saltar si no hay pieza, si es el Rey o si ya se movió este turno
+            if (p == NULL || p->tipo == 'R' || p->movido) continue;
+
+            if (p->tipo == 'P') {
+                // Lógica Peón: avanzar 1 hacia el Rey
+                int nx = p->x;
+                int ny = p->y + ((juego->jugador->y > p->y) ? 1 : (juego->jugador->y < p->y ? -1 : 0));
+
+                if (nx >= 0 && nx < t->W && ny >= 0 && ny < t->H) {
+                    Celda *dest = (Celda *)t->celdas[ny][nx];
+                    if (dest->pieza != NULL && dest->pieza->tipo == 'R') {
+                        printf("¡El Peón ha capturado al Rey! GAME OVER\n");
+                        exit(0);
+                    }
+                    if (dest->pieza == NULL) {
+                        dest->pieza = p;
+                        c->pieza = NULL;
+                        p->x = nx; p->y = ny;
+                        p->movido = true;
+                    }
+                }
+            } 
+            else if (p->tipo == 'T' && (juego->turno_enemigos % 2 == 0)) {
+                // Torre: hasta 3 casillas ortogonales
+                int dx = 0, dy = 0;
+                if (abs(juego->jugador->x - p->x) > abs(juego->jugador->y - p->y)) 
+                    dx = (juego->jugador->x > p->x) ? 1 : -1;
+                else 
+                    dy = (juego->jugador->y > p->y) ? 1 : -1;
+
+                int nx = p->x, ny = p->y, pasos = 0;
+                while (pasos < 3) {
+                    int tx = nx + dx, ty = ny + dy;
+                    if (tx < 0 || tx >= t->W || ty < 0 || ty >= t->H) break;
+                    Celda *sig_c = (Celda *)t->celdas[ty][tx];
+                    if (sig_c->pieza != NULL) {
+                        if (sig_c->pieza->tipo == 'R') {
+                            printf("¡La Torre ha capturado al Rey! GAME OVER.\n");
+                            exit(0); 
+                        }
+                        break; 
+                    }
+                    nx = tx; ny = ty; pasos++;
+                }
+                if (nx != p->x || ny != p->y) {
+                    ((Celda *)t->celdas[ny][nx])->pieza = p;
+                    c->pieza = NULL;
+                    p->x = nx; p->y = ny;
+                    p->movido = true;
+                }
+            }
+            else if (p->tipo == 'A') {
+                // Alfil: hasta 3 casillas diagonales
+                int dx = (juego->jugador->x > p->x) ? 1 : -1;
+                int dy = (juego->jugador->y > p->y) ? 1 : -1;
+                int nx = p->x, ny = p->y, pasos = 0;
+
+                while (pasos < 3) {
+                    int tx = nx + dx, ty = ny + dy;
+                    if (tx < 0 || tx >= t->W || ty < 0 || ty >= t->H) break;
+                    Celda *sig_c = (Celda *)t->celdas[ty][tx];
+                    if (sig_c->pieza != NULL) {
+                        if (sig_c->pieza->tipo == 'R') {
+                            printf("¡El Alfil ha capturado al Rey! GAME OVER.\n");
+                            exit(0); 
+                        }
+                        break; 
+                    }
+                    nx = tx; ny = ty; pasos++;
+                }
+                if (nx != p->x || ny != p->y) {
+                    ((Celda *)t->celdas[ny][nx])->pieza = p;
+                    c->pieza = NULL;
+                    p->x = nx; p->y = ny;
+                    p->movido = true;
+                }
+            }
+            else if (p->tipo == 'C') {
+                // Caballo: movimiento en L minimizando distancia
+                int saltos_x[] = {1, 2, 2, 1, -1, -2, -2, -1};
+                int saltos_y[] = {-2, -1, 1, 2, 2, 1, -1, -2};
+                int mejor_x = p->x, mejor_y = p->y;
+                double dist_minima = -1.0; 
+
+                for (int i = 0; i < 8; i++) {
+                    int nx = p->x + saltos_x[i], ny = p->y + saltos_y[i];
+                    if (nx >= 0 && nx < t->W && ny >= 0 && ny < t->H) {
+                        Celda *c_dest = (Celda *)t->celdas[ny][nx];
+                        if (c_dest->pieza != NULL && c_dest->pieza->tipo == 'R') {
+                            printf("¡El Caballo ha capturado al Rey! GAME OVER.\n");
+                            exit(0);
+                        }
+                        if (c_dest->pieza == NULL) {
+                            double dist = sqrt(pow(juego->jugador->x - nx, 2) + pow(juego->jugador->y - ny, 2));
+                            if (dist_minima < 0 || dist < dist_minima) {
+                                dist_minima = dist; mejor_x = nx; mejor_y = ny;
+                            }
+                        }
+                    }
+                }
+                if (mejor_x != p->x || mejor_y != p->y) {
+                    ((Celda *)t->celdas[mejor_y][mejor_x])->pieza = p;
+                    c->pieza = NULL;
+                    p->x = mejor_x; p->y = mejor_y;
+                    p->movido = true;
+                }
+            }
+            else if (p->tipo == 'Q') {
+                // Reina: hasta 4 casillas en cualquier dirección
+                int dx = (juego->jugador->x > p->x) ? 1 : (juego->jugador->x < p->x ? -1 : 0);
+                int dy = (juego->jugador->y > p->y) ? 1 : (juego->jugador->y < p->y ? -1 : 0);
+                int nx = p->x, ny = p->y, pasos = 0;
+
+                while (pasos < 4) {
+                    int tx = nx + dx, ty = ny + dy;
+                    if (tx < 0 || tx >= t->W || ty < 0 || ty >= t->H) break;
+                    Celda *sig_c = (Celda *)t->celdas[ty][tx];
+                    if (sig_c->pieza != NULL) {
+                        if (sig_c->pieza->tipo == 'R') {
+                            printf("¡LA REINA HA CAPTURADO AL REY! GAME OVER.\n");
+                            exit(0); 
+                        }
+                        break; 
+                    }
+                    nx = tx; ny = ty; pasos++;
+                }
+                if (nx != p->x || ny != p->y) {
+                    ((Celda *)t->celdas[ny][nx])->pieza = p;
+                    c->pieza = NULL;
+                    p->x = nx; p->y = ny;
+                    p->movido = true;
+                }
+            }
+        }
+    }
+}
 
 bool verificar_estado_rey(struct Juego *juego){return false;}; /* Revisa si el Rey esta en Jaque */
 

@@ -24,6 +24,7 @@ int main(){
     
     juego.jugador = (Pieza *)malloc(sizeof(Pieza));
     spawn_rey(&juego);
+    spawn_nivel(&juego, juego.nivel_actual);
     inicializar_armas(&juego);
     
     char input;
@@ -31,6 +32,7 @@ int main(){
 
     while(true){
         tablero_imprimir(&juego);
+
         printf("En caso de querer salir: 0.\n");
         printf("Ingrese movimiento (WASD/QEZC) o arma (1234): ");
         scanf(" %c", &input);

@@ -9,6 +9,7 @@ typedef struct Pieza{
     char tipo; /* ’P’=Peon, ’C’=Caballo, ’A’=Alfil, ’T’=Torre, ’Q’=Reina, ’R’=Rey */
     int hp;
     int x, y;
+    bool movido; /* Para evitar que una pieza mueva varias veces en el mismo turno */   
 } Pieza;
 
 typedef struct Celda{

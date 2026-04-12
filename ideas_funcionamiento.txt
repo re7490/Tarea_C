@@ -32,11 +32,11 @@ PRIMORDIAL y LO PRIMERO:
 - Spawn aleatorio Rey ✅
 - Mov Rey ✅
 - Borrar Tablero 7
-- Funcionamiento Armas 
-    - Escopeta y su recarga 7
+- Uso Armas 
+    - Escopeta y su recarga ✅
     - Arma especial 
-    - Sniper y Granada 7 7
-- Enemigos:
+    - Sniper y Granada ✅✅
+- Enemigos
     - Peon 
     - Caballo 
     - Torre y Alfil 
@@ -46,7 +46,11 @@ PRIMORDIAL y LO PRIMERO:
     - Demas en 1ra fila 
 - Mov Enemigos 
     - Manejar colisiones: prioridad de mov 
-- Daño de armas a enemigos 
+- Daño de Armas
+    - Escopeta
+    - Arma especial 
+    - Sniper
+    - Granada
 - Eliminacion enemigos 
 - Pasar de nivel 
 - Crear Tablero nuevo 
