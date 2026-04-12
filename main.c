@@ -31,9 +31,14 @@ int main(){
 
     while(true){
         tablero_imprimir(&juego);
+        printf("En caso de querer salir: 0.\n");
         printf("Ingrese movimiento (WASD/QEZC) o arma (1234): ");
         scanf(" %c", &input);
+
         turno_valido = false;
+        char dir;
+        int dx = 0, dy = 0;
+
         switch (tolower(input)) { //pasamos el input a min
             case 'w': turno_valido = mover_rey(&juego,  0, -1); break;
             case 's': turno_valido = mover_rey(&juego,  0,  1); break;
@@ -44,7 +49,31 @@ int main(){
             case 'z': turno_valido = mover_rey(&juego, -1,  1); break;
             case 'c': turno_valido = mover_rey(&juego,  1,  1); break;
             
-            // Aquí irán las llamadas a las armas (1, 2, 3, 4) más adelante
+            case '1': case '2': case '3': case '4':
+
+                printf("Ingrese direccion de disparo (WASD/QEZC): ");
+                scanf(" %c", &dir);
+                dir = tolower(dir); // direccion a min
+                
+                // direccion a deltas (x, y)
+                if (dir == 'w') { dy = -1; }
+                else if (dir == 's') { dy = 1; }
+                else if (dir == 'a') { dx = -1; }
+                else if (dir == 'd') { dx = 1; }
+                else if (dir == 'q') { dx = -1; dy = -1; }
+                else if (dir == 'e') { dx = 1; dy = -1; }
+                else if (dir == 'z') { dx = -1; dy = 1; }
+                else if (dir == 'c') { dx = 1; dy = 1; }
+                else { printf("Direccion invalida.\n"); break; }
+
+                int indice_arma = input - '1'; 
+                turno_valido = juego.arsenal.disparar[indice_arma](&juego, dx, dy);
+                break;
+            case '0':
+                printf("¡Saliendo del juego!\n");
+                tablero_liberar(juego.t);
+                free(juego.jugador);
+                return 0;
             default:
                 printf("Accion no reconocida.\n");
                 break;
