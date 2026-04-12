@@ -4,6 +4,7 @@
 #include <stdbool.h>
 
 struct Juego; /* Forward declaration */
+typedef struct Juego Juego;
 
 typedef bool (*FuncArma)(struct Juego *j, int dir_x, int dir_y); /* Puntero a funcion */
 

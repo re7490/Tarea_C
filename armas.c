@@ -147,9 +147,11 @@ void inicializar_armas(Juego *j) {
     // Especial
     j->arsenal.disparar[3] = especial;
 }
+
 bool esta_en_rango(Juego *j, int x, int y) {
     return (x >= 0 && x < j->t->W && y >= 0 && y < j->t->H);
 }
+
 void aplicar_daño(struct Juego *j, int x, int y, int puntos_daño) {
     if (esta_en_rango(j, x, y)) {
         Celda *c = (Celda *)j->t->celdas[y][x];
@@ -159,6 +161,7 @@ void aplicar_daño(struct Juego *j, int x, int y, int puntos_daño) {
         }
     }
 }
+
 void limpiar_enemigos_muertos(struct Juego *j) {
     for (int y = 0; y < j->t->H; y++) {
         for (int x = 0; x < j->t->W; x++) {

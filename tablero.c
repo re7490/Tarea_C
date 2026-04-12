@@ -43,13 +43,13 @@ void tablero_imprimir(struct Juego *juego){
 
     Tablero *t = juego->t;
     
-    printf("NIVEL: %d   | Enemigos vivos: %d \n Turno: %d | Turno enemigos: %d",
+    printf("NIVEL: %d  |  Enemigos vivos: %d \nTurno: %d | Turno enemigos: %d\n",
             juego->nivel_actual,
             juego->enemigos_vivos,
             juego->turno_actual,
             juego->turno_enemigos
             );
-    printf("Arsenal: [1] Escopeta (%d/2) [2] Sniper (%d/1)\n [3] Granada (%d/2) [4] Arma Especial (%d/4)\n",
+    printf("Arsenal: [1] Escopeta (%d/2) [2] Sniper (%d/1)\n         [3] Granada (%d/2) [4] Arma Especial (%d/4)\n",
             juego->arsenal.municion_actual[0],
             juego->arsenal.municion_actual[1],
             juego->arsenal.municion_actual[2],

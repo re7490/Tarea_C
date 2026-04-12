@@ -28,7 +28,7 @@ void spawn_rey(struct Juego *juego) {
 
     // puntero en la celda del tablero
     Celda *c = (Celda *)t->celdas[y_rey][x_random];
-    c->pieza = &(juego->jugador); 
+    c->pieza = juego->jugador; 
 }
 
 bool mover_rey(struct Juego *juego, int delta_x, int delta_y) {
@@ -54,7 +54,7 @@ bool mover_rey(struct Juego *juego, int delta_x, int delta_y) {
 
     // hacer mov
     celda_origen->pieza = NULL;      // vaciar celda actual
-    celda_destino->pieza = &(juego->jugador); // poner Rey en la nueva celda
+    celda_destino->pieza = juego->jugador; // poner Rey en la nueva celda
     juego->jugador->x = nuevo_x;
     juego->jugador->y = nuevo_y;
 

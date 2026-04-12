@@ -19,6 +19,6 @@ void spawn_nivel(struct Juego *juego, int nivel);
 void mover_enemigos(struct Juego *juego);
 bool verificar_estado_rey(struct Juego *juego); /* Revisa si el Rey esta en Jaque */
 void spawn_rey(struct Juego *juego); /* Spawnea al Rey en el tablero */  
-void mover_rey(struct Juego *juego, int dir_x, int dir_y); /* Mueve al Rey en la direccion dada */   
+bool mover_rey(struct Juego *juego, int dir_x, int dir_y); /* Mueve al Rey en la direccion dada */   
 
 #endif

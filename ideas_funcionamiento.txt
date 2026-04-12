@@ -26,11 +26,11 @@ SE APLICA TODO LO ANTERIOR
 Cuando se llegue al nivel 3, basta con que muera la reina y se gana el juego
 
 PRIMORDIAL y LO PRIMERO:
-✅✅✅✅✅✅ 
-- Crear 1er Tablero 7
-- Rey 7
-- Spawn aleatorio Rey 7
-- Mov Rey 
+✅ 
+- Crear 1er Tablero ✅
+- Rey ✅
+- Spawn aleatorio Rey ✅
+- Mov Rey ✅
 - Borrar Tablero 7
 - Funcionamiento Armas 
     - Escopeta y su recarga 7
