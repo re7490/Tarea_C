@@ -10,7 +10,7 @@
 #include "main.h"
 
 int main(){
-    srand((unsigned int)time(NULL)); // Semilla para aleatoriedad
+    srand((unsigned int)time(NULL)); // semilla para aleatoriedad
     Juego juego;
     juego.nivel_actual = 1;
     juego.turno_actual = 1;
@@ -41,7 +41,7 @@ int main(){
         char dir;
         int dx = 0, dy = 0;
 
-        switch (tolower(input)) { //pasamos el input a min
+        switch (tolower(input)) { // pasamos el input a min
             case 'w': turno_valido = mover_rey(&juego,  0, -1); break;
             case 's': turno_valido = mover_rey(&juego,  0,  1); break;
             case 'a': turno_valido = mover_rey(&juego, -1,  0); break;
@@ -81,14 +81,14 @@ int main(){
                 break;
         }
         if (turno_valido) {
-            // 1. Verificar si el Rey entró en una casilla enemiga (opcional según tu lógica)
-            // 2. Mover enemigos
+            // verificar Rey entro en una casilla comprometida?
+            // mover enemigos
             mover_enemigos(&juego);
             
-            // 3. Limpiar muertos por si hubo trampas o efectos
+            // limpiar muertos
             limpiar_enemigos_muertos(&juego);
             
-            // 4. Actualizar contadores
+            // actualizar contadores
             juego.turno_actual++;
             juego.turno_enemigos++;
         } else {

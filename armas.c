@@ -59,11 +59,11 @@ bool francotirador(struct Juego *j, int dir_x, int dir_y){
         return false;
     }
 
-    // proyectil comienza en posición del Rey
+    // proyectil comienza donde esta el Rey
     int cur_x = j->jugador->x + dir_x;
     int cur_y = j->jugador->y + dir_y;
 
-    // recorrer el tablero en dirección elegida
+    // recorrer el tablero en direccion elegida
     while (esta_en_rango(j, cur_x, cur_y)) {
         Celda *c = (Celda *)j->t->celdas[cur_y][cur_x];
 
@@ -72,7 +72,7 @@ bool francotirador(struct Juego *j, int dir_x, int dir_y){
             printf("IMPACTO!! 3 HP infligidos a %c.\n", c->pieza->tipo);
             c->pieza->hp -= 3; // inflige 3 de daño 
             
-            // Si la pieza muere, se maneja en una función de limpieza
+            // Si la pieza muere, se maneja en una funcion de limpieza
             break; 
         }
 
@@ -81,12 +81,12 @@ bool francotirador(struct Juego *j, int dir_x, int dir_y){
         cur_y += dir_y;
     }
 
-    // consumir munición
+    // consumir municion
     j->arsenal.municion_actual[1]--;
     return true;
 
 
-}; /* Ej (x,y) = (1,0), (0,-1)... */
+};
 
 
 bool granada(struct Juego *j, int dir_x, int dir_y) {
@@ -102,13 +102,13 @@ bool granada(struct Juego *j, int dir_x, int dir_y) {
 
     printf("¡Lanzando granada a (%d, %d)!\n", target_x + 1, target_y + 1);
 
-    // procesar area de explosión 3x3 centrada en el impacto 
+    // procesar area de explosion 3x3 centrada en el impacto 
     for (int dy = -1; dy <= 1; dy++) {
         for (int dx = -1; dx <= 1; dx++) {
             int current_x = target_x + dx;
             int current_y = target_y + dy;
 
-            // usar esta_en_rango para cada casilla de la explosión
+            // usar esta_en_rango para cada casilla de la explosion
             if (esta_en_rango(j, current_x, current_y)) {
                 Celda *c = (Celda *)j->t->celdas[current_y][current_x];
                 
@@ -126,7 +126,7 @@ bool granada(struct Juego *j, int dir_x, int dir_y) {
     return true;
 }
 
-bool especial(struct Juego *j, int dir_x, int dir_y){return false;}; /* Se puede modificar */
+bool especial(struct Juego *j, int dir_x, int dir_y){return false;}; /* FALTA HACER */
 
 void inicializar_armas(Juego *j) {
     // Escopeta
@@ -157,7 +157,8 @@ void aplicar_daño(struct Juego *j, int x, int y, int puntos_daño) {
         Celda *c = (Celda *)j->t->celdas[y][x];
         if (c->pieza != NULL) {
             c->pieza->hp -= puntos_daño;
-            // aqui iria la logica para eliminar la pieza si HP <= 0
+            // agregar logica eliminar pieza si HP <= 0
+            // de manera q decremente enemigos_vivos en el juego
         }
     }
 }
@@ -167,14 +168,13 @@ void limpiar_enemigos_muertos(struct Juego *j) {
         for (int x = 0; x < j->t->W; x++) {
             Celda *c = (Celda *)j->t->celdas[y][x];
             
-            // Si hay una pieza y no es el Rey ('R')
+            // si hay una pieza y no es el Rey
             if (c->pieza != NULL && c->pieza->tipo != 'R') {
                 if (c->pieza->hp <= 0) {
                     printf("¡%c ha sido eliminado!\n", c->pieza->tipo);
                     
-                    // IMPORTANTE: Liberar la memoria si usaste malloc para el enemigo
                     free(c->pieza); 
-                    c->pieza = NULL; // Dejar la celda vacía [cite: 113]
+                    c->pieza = NULL;
                 }
             }
         }

@@ -49,7 +49,7 @@ void spawn_nivel(struct Juego *juego, int nivel) {
 void mover_enemigos(struct Juego *juego) {
     Tablero *t = juego->t;
 
-    // 1. Limpiar flags de movimiento al inicio del turno
+    // flags mov a falso
     for (int y = 0; y < t->H; y++) {
         for (int x = 0; x < t->W; x++) {
             Celda *c = (Celda *)t->celdas[y][x];
@@ -62,12 +62,12 @@ void mover_enemigos(struct Juego *juego) {
             Celda *c = (Celda *)t->celdas[y][x];
             Pieza *p = c->pieza;
 
-            // Saltar si no hay pieza, si es el Rey o si ya se movió este turno
+            // pasar al sig si no hay pieza, si es el Rey o si ya se movio este turno
             if (p == NULL || p->tipo == 'R' || p->movido) continue;
 
             if (p->tipo == 'P') {
-                // Lógica Peón: avanzar 1 hacia el Rey
-                int nx = p->x;
+                // Peon avanza 1 casilla (recto)
+                int nx = p->x; // misma columna
                 int ny = p->y + ((juego->jugador->y > p->y) ? 1 : (juego->jugador->y < p->y ? -1 : 0));
 
                 if (nx >= 0 && nx < t->W && ny >= 0 && ny < t->H) {
@@ -85,7 +85,7 @@ void mover_enemigos(struct Juego *juego) {
                 }
             } 
             else if (p->tipo == 'T' && (juego->turno_enemigos % 2 == 0)) {
-                // Torre: hasta 3 casillas ortogonales
+                // Torre hasta 3 casillas ortogonales
                 int dx = 0, dy = 0;
                 if (abs(juego->jugador->x - p->x) > abs(juego->jugador->y - p->y)) 
                     dx = (juego->jugador->x > p->x) ? 1 : -1;
@@ -114,7 +114,7 @@ void mover_enemigos(struct Juego *juego) {
                 }
             }
             else if (p->tipo == 'A') {
-                // Alfil: hasta 3 casillas diagonales
+                // Alfil hasta 3 casillas diagonales
                 int dx = (juego->jugador->x > p->x) ? 1 : -1;
                 int dy = (juego->jugador->y > p->y) ? 1 : -1;
                 int nx = p->x, ny = p->y, pasos = 0;
@@ -140,7 +140,7 @@ void mover_enemigos(struct Juego *juego) {
                 }
             }
             else if (p->tipo == 'C') {
-                // Caballo: movimiento en L minimizando distancia
+                // Caballo mov en L minimizando distancia
                 int saltos_x[] = {1, 2, 2, 1, -1, -2, -2, -1};
                 int saltos_y[] = {-2, -1, 1, 2, 2, 1, -1, -2};
                 int mejor_x = p->x, mejor_y = p->y;
@@ -170,7 +170,7 @@ void mover_enemigos(struct Juego *juego) {
                 }
             }
             else if (p->tipo == 'Q') {
-                // Reina: hasta 4 casillas en cualquier dirección
+                // Reina hasta 4 casillas en cualquier direccion
                 int dx = (juego->jugador->x > p->x) ? 1 : (juego->jugador->x < p->x ? -1 : 0);
                 int dy = (juego->jugador->y > p->y) ? 1 : (juego->jugador->y < p->y ? -1 : 0);
                 int nx = p->x, ny = p->y, pasos = 0;
@@ -206,7 +206,7 @@ void spawn_rey(struct Juego *juego) {
     
     // rango x es de 1 hasta (W - 2) para evitar esquinas
     int x_random = 1 + (rand() % (t->W - 2));
-    int y_rey = t->H - 1; // Última fila
+    int y_rey = t->H - 1; // ultima fila
     
     juego->jugador->tipo = 'R';
     juego->jugador->hp = 1; 
