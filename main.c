@@ -114,6 +114,8 @@ int main(){
                 
                 // nuevo tablero y spwan
                 juego.t = tablero_crear(nuevo_ancho, nuevo_alto);
+                juego.jugador = (Pieza *)malloc(sizeof(Pieza));
+
                 spawn_rey(&juego);
                 spawn_nivel(&juego, juego.nivel_actual);
                 
