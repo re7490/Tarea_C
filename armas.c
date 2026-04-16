@@ -52,6 +52,7 @@ bool escopeta(struct Juego *j, int dir_x, int dir_y) {
     j->arsenal.municion_actual[0]--;
     return true;
 }
+
 bool francotirador(struct Juego *j, int dir_x, int dir_y){
     // validamos municion
     if (j->arsenal.municion_actual[1] <= 0) {
@@ -175,6 +176,7 @@ void limpiar_enemigos_muertos(struct Juego *j) {
                     
                     free(c->pieza); 
                     c->pieza = NULL;
+                    j->enemigos_vivos--;
                 }
             }
         }

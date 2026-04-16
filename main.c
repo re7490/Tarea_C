@@ -31,11 +31,14 @@ int main(){
     bool turno_valido;
 
     while(true){
+
+        printf("\033[H\033[J");
         tablero_imprimir(&juego);
 
         printf("En caso de querer salir: 0.\n");
         printf("Ingrese movimiento (WASD/QEZC) o arma (1234): ");
         scanf(" %c", &input);
+        while (getchar() != '\n'); // limpiar buffer
 
         turno_valido = false;
         char dir;
@@ -55,6 +58,8 @@ int main(){
 
                 printf("Ingrese direccion de disparo (WASD/QEZC): ");
                 scanf(" %c", &dir);
+                while (getchar() != '\n'); // limpiar buffer
+
                 dir = tolower(dir); // direccion a min
                 
                 // direccion a deltas (x, y)
@@ -82,17 +87,47 @@ int main(){
         }
         if (turno_valido) {
             // verificar Rey entro en una casilla comprometida?
-            // mover enemigos
-            mover_enemigos(&juego);
-            
+
             // limpiar muertos
             limpiar_enemigos_muertos(&juego);
-            
+            // mover enemigos
+            mover_enemigos(&juego);
+                       
             // actualizar contadores
             juego.turno_actual++;
             juego.turno_enemigos++;
         } else {
             printf("Turno no consumido. Intente de nuevo.\n");
+        }
+        // Dentro del while(true) en main.c, después de limpiar_enemigos_muertos
+        if (juego.enemigos_vivos == 0) {
+            if (juego.nivel_actual < 3) {
+                printf("¡NIVEL %d COMPLETADO!\n", juego.nivel_actual);
+                juego.nivel_actual++;
+                
+                // chao tablero viejo y piezas
+                tablero_liberar(juego.t);
+                
+                // nuevas dim tablero
+                int nuevo_ancho = (juego.nivel_actual == 2) ? 8 : 6;
+                int nuevo_alto = (juego.nivel_actual == 2) ? 8 : 6;
+                
+                // nuevo tablero y spwan
+                juego.t = tablero_crear(nuevo_ancho, nuevo_alto);
+                spawn_rey(&juego);
+                spawn_nivel(&juego, juego.nivel_actual);
+                
+                // recarga municion
+                for(int i = 0; i < 4; i++) {
+                    juego.arsenal.municion_actual[i] = juego.arsenal.municion_maxima[i];
+                }
+                
+                printf("Entrando al Nivel %d...\n", juego.nivel_actual);
+                continue; 
+            } else {
+                printf("¡HAS RECUPERADO TU TRONO! GANASTE EL JUEGO.\n");
+                break; 
+            }
         }
     }
     tablero_liberar(juego.t);

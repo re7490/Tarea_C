@@ -49,22 +49,30 @@ void spawn_nivel(struct Juego *juego, int nivel) {
 void mover_enemigos(struct Juego *juego) {
     Tablero *t = juego->t;
 
-    // flags mov a falso
+    // flags mov a falso y ver quiene se pueden mover
+    Pieza *enemigos_disponibles[100];
+    int contador_enemigos = 0;
+
     for (int y = 0; y < t->H; y++) {
         for (int x = 0; x < t->W; x++) {
             Celda *c = (Celda *)t->celdas[y][x];
-            if (c->pieza) c->pieza->movido = false;
+            if (c->pieza && c->pieza->tipo != 'R') {
+                c->pieza->movido = false;
+                enemigos_disponibles[contador_enemigos++] = c->pieza;
+            }
         }
     }
+    
+    int limite = (contador_enemigos < 3) ? contador_enemigos : 3; // maximo 3 mov por turno
+    int movidos_este_turno = 0;
 
-    for (int y = 0; y < t->H; y++) {
-        for (int x = 0; x < t->W; x++) {
-            Celda *c = (Celda *)t->celdas[y][x];
-            Pieza *p = c->pieza;
+    for (int i = 0; i < contador_enemigos && movidos_este_turno < limite; i++) {
+        Pieza *p = enemigos_disponibles[i];
 
-            // pasar al sig si no hay pieza, si es el Rey o si ya se movio este turno
-            if (p == NULL || p->tipo == 'R' || p->movido) continue;
+        Celda *c = (Celda *)t->celdas[p->y][p->x];
 
+        if (p && p->tipo != 'R' && !p->movido) {
+            
             if (p->tipo == 'P') {
                 // Peon avanza 1 casilla (recto)
                 int nx = p->x; // misma columna
@@ -81,6 +89,7 @@ void mover_enemigos(struct Juego *juego) {
                         c->pieza = NULL;
                         p->x = nx; p->y = ny;
                         p->movido = true;
+                        movidos_este_turno++;
                     }
                 }
             } 
@@ -111,6 +120,7 @@ void mover_enemigos(struct Juego *juego) {
                     c->pieza = NULL;
                     p->x = nx; p->y = ny;
                     p->movido = true;
+                    movidos_este_turno++;
                 }
             }
             else if (p->tipo == 'A') {
@@ -137,6 +147,7 @@ void mover_enemigos(struct Juego *juego) {
                     c->pieza = NULL;
                     p->x = nx; p->y = ny;
                     p->movido = true;
+                    movidos_este_turno++;
                 }
             }
             else if (p->tipo == 'C') {
@@ -167,6 +178,7 @@ void mover_enemigos(struct Juego *juego) {
                     c->pieza = NULL;
                     p->x = mejor_x; p->y = mejor_y;
                     p->movido = true;
+                    movidos_este_turno++;
                 }
             }
             else if (p->tipo == 'Q') {
@@ -193,6 +205,7 @@ void mover_enemigos(struct Juego *juego) {
                     c->pieza = NULL;
                     p->x = nx; p->y = ny;
                     p->movido = true;
+                    movidos_este_turno++;
                 }
             }
         }
