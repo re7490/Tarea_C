@@ -52,5 +52,5 @@ PRIMORDIAL y LO PRIMERO:
     - Sniper ✅
     - Granada ✅
 - Eliminacion enemigos ✅
-- Pasar de nivel 
-- Crear Tablero nuevo 
+- Pasar de nivel ✅
+- Crear Tablero nuevo ✅
