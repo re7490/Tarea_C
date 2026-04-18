@@ -28,11 +28,41 @@ Una vez eso listo, ejecute:
     ./rey_destronado
 
 ------------------------------------------------------------------------------------------------------------
-Consideraciones:
+Al iniciar el juego se generara el primer nivel automaticamente.
+El Rey aparece en una columna aleatoria del tablero, pero siempre en la 1ra fila inferior.
+Los enemigos aparecen en las dos filas superiores, en columnas aleatorias (Peones 2da fila superior, las demas en la 1ra fila superior).
 
-El Rey aparecera en una columna aleatoria del tablero, pero siempre aparecera en la 1ra fila inferior.
-Los enemigos apareceran en las dos filas superiores, en columnas aleatorias (Peones 2da fila superior, las demas en la 1ra fila superior).
-Los enemigos se moveran tal cual como lo hacen en ajedrez, se mueven maximo 3 enemigos por turno, y los enemigos que se mueven son completamente aleatorios.
+Las acciones son las siguientes:
+    A,a (Izquierda) - D,d (Derecha) - W,w (Arriba) - S,s (Abajo) 
+    Q,q (Arriba izquierda)- E,e (Arriba derecha) - Z,z (Abajo izquierda) - C,c (Abajo derecha)
+    1 (Escopeta) - 2 (Sniper) - 3 (Granada) - 4 (Teletransportador devastador)
+    0 (Salir del juego)
+
+Reglas:
+El jugador aparece en el tablero con la maxima municion de todas las armas (Escopeta=2, Sniper=1, Granada=2, Especial=2), al usar las armas disminuiran sus municiones y no se podran recargar, a excepcion de la Escopeta, que recarga 1 municion cada vez que se mueve el jugador.
+Al momento de seleccionar el arma a usar, se le pedira al jugador una direccion en la que disparar.
+
+Los enemigos se moveran tal cual como lo hacen en ajedrez:
+    Peon: avanza 1 casilla verticalmente hacia el extremo opuesto del tablero, puede atacar al rey si se encuentra en sus diagonales inferiores o si se encuentra en su casilla inferior
+    Alfil: se mueve solo en las diagonales con un maximo de 3 casillas por turno.
+    Torre: se mueve solo en las ortogonales con un maximo de 3 casillas por turno, ademas solo podra moverse cada 2 turnos.
+    Caballo: se mueve en forma de L.
+    Reina: se mueve como un alfil y una torre, teniendo un maximo de 4 casillas por turno.
+
+Ademas, para que no sea casi imposible el juego, en cada turno de los enemigos solo puden moverse como maximo 3 enemigos, y los que se mueven son completamente aleatorios.
+
+El HUD del juego muestra lo siguiente:
+    -Turno actual y de los enemigos
+    -Enemigos vivos
+    -Munición de todas las armas
+    -Tablero
+    -Solicitacion de Input
+    -Mensajes de eventos
+
+Para ganar, el jugador debera avanzar eliminando a todos los enemigos de los niveles y eliminar a la Reina en el ultimo Nivel.
+Si es eliminado por alguna pieza antes de lo anterior, perdera.
+
+Consideraciones:
 
 La terminal mostrara solo un tablero a la vez, es decir, al ejecutar una accion se limpia la terminal y a su vez se imprimiran los datos del juego y el tablero inmediatamente con la accion realizada.
 Cabe recalcar que se le pedira al jugador presionar otra vez Enter en caso de cualquiera de los siguientes casos:
@@ -52,3 +82,5 @@ Una vez todos los enemigos del tablero hayan sido eliminado, el jugador avanzara
 *Solo aplica si el Rey quiere hacer un movimiento
 
 ARMA ESPECIAL:
+
+El arma especial (Teletransportador devastador), consiste en un teletransportador que poseia el Rey en su boveda, el cual le permite al Rey teletransportarse a 2 casillas en cualquier direccion, inflingiendo 5 de daño en la casilla donde aparece e inflingiendo 2 de daño a los enemigos que esten adyacentes (arriba, abajo, a la izquierda o derecha).

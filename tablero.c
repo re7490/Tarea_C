@@ -49,7 +49,7 @@ void tablero_imprimir(struct Juego *juego){
             juego->turno_actual,
             juego->turno_enemigos
             );
-    printf("Arsenal: [1] Escopeta (%d/%d) [2] Sniper (%d/%d)\n         [3] Granada (%d/%d) [4] Arma Especial (%d/%d)\n",
+    printf("Arsenal: [1] Escopeta (%d/%d) [2] Sniper (%d/%d)\n         [3] Granada (%d/%d) [4] Teletransportador Devastador (%d/%d)\n",
             juego->arsenal.municion_actual[0],
             juego->arsenal.municion_maxima[0],
             juego->arsenal.municion_actual[1],
