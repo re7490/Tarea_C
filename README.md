@@ -47,6 +47,7 @@ En caso que un enemigo quiera avanzar hacia el Rey por su ruta mas optima, y res
 
 Una vez todos los enemigos del tablero hayan sido eliminado, el jugador avanzara de nivel. En caso de estar en el ultimo nivel y eliminar a la Reina, el jugador ganara automaticamente.
 
-*si el Rey quiere moverse a una casilla, y resulta que existe la posibilidad que un enemigo se mueva a esa misma casilla (haciendo jaque mate al jugador), se le notificara al jugador de esto y no hara el movimiento, diciendole que estara en riego de perder y pidiendole otra vez un input. Esto sucedera un total de dos veces, si el jugador aun asi insiste en ir a esa casilla, el juego lo permitira. (inspirado en el juego original)
+*Si el Rey quiere moverse a una casilla, y resulta que existe la posibilidad que un enemigo se mueva a esa misma casilla (haciendo jaque mate al jugador), se le notificara al jugador de esto y no hara el movimiento, diciendole que estara en riego de perder y pidiendole otra vez un input. Esto sucedera un total de dos veces, si el jugador aun asi insiste en ir a esa casilla, el juego lo permitira. (inspirado en el juego original). 
+*Solo aplica si el Rey quiere hacer un movimiento
 
-ARMA ESPECIAL
+ARMA ESPECIAL:

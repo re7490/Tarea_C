@@ -49,11 +49,15 @@ void tablero_imprimir(struct Juego *juego){
             juego->turno_actual,
             juego->turno_enemigos
             );
-    printf("Arsenal: [1] Escopeta (%d/2) [2] Sniper (%d/1)\n         [3] Granada (%d/2) [4] Arma Especial (%d/4)\n",
+    printf("Arsenal: [1] Escopeta (%d/%d) [2] Sniper (%d/%d)\n         [3] Granada (%d/%d) [4] Arma Especial (%d/%d)\n",
             juego->arsenal.municion_actual[0],
+            juego->arsenal.municion_maxima[0],
             juego->arsenal.municion_actual[1],
+            juego->arsenal.municion_maxima[1],
             juego->arsenal.municion_actual[2],
-            juego->arsenal.municion_actual[3]
+            juego->arsenal.municion_maxima[2],
+            juego->arsenal.municion_actual[3],
+            juego->arsenal.municion_maxima[3]
             );
     printf("=====================================================\n");
     for (int y = 0; y < t->H; y++){

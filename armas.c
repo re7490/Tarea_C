@@ -127,7 +127,67 @@ bool granada(struct Juego *j, int dir_x, int dir_y) {
     return true;
 }
 
-bool especial(struct Juego *j, int dir_x, int dir_y){return false;}; /* FALTA HACER */
+bool especial(struct Juego *j, int dir_x, int dir_y) {
+    // validacion municion
+    if (j->arsenal.municion_actual[3] <= 0) {
+        printf("¡Sin municion del Enroque Ofensivo!\n");
+        return false;
+    }
+
+    // calculo casilla destino
+    int target_x = j->jugador->x + (dir_x * 2);
+    int target_y = j->jugador->y + (dir_y * 2);
+
+    // destino dentro tablero?
+    if (!esta_en_rango(j, target_x, target_y)) {
+        printf("Movimiento invalido: El destino del Enroque está fuera del tablero.\n");
+        return false;
+    }
+
+    // celdas origen y destino
+    Celda *celda_origen = (Celda *)j->t->celdas[j->jugador->y][j->jugador->x];
+    Celda *celda_destino = (Celda *)j->t->celdas[target_y][target_x];
+
+    // casilla de aterrizaje vacia
+    if (celda_destino->pieza != NULL) {
+        printf("¡IMPACTO DIRECTO! El Rey aplasta a '%c' haciendole 5 de daño.\n", celda_destino->pieza->tipo);
+        free(celda_destino->pieza);
+        celda_destino->pieza = NULL;
+        j->enemigos_vivos--;
+    }
+
+    // confirmar tp del Rey
+    celda_origen->pieza = NULL;
+    celda_destino->pieza = j->jugador;
+    j->jugador->x = target_x;
+    j->jugador->y = target_y;
+    
+    printf("\n¡ENROQUE OFENSIVO! El Rey se teletransporta a la casilla (%d, %d).\n", target_x + 1, target_y + 1);
+
+    // onda expansiva: Daño 4 casillas adyacentes (Arriba, Abajo, Izquierda, Derecha)
+    int adj_dx[] = {0, 0, -1, 1};
+    int adj_dy[] = {-1, 1, 0, 0};
+
+    for (int i = 0; i < 4; i++) {
+        int wave_x = target_x + adj_dx[i];
+        int wave_y = target_y + adj_dy[i];
+        
+        // casilla onda expansiva valida y tiene un enemigo
+        if (esta_en_rango(j, wave_x, wave_y)) {
+            Celda *c = (Celda *)j->t->celdas[wave_y][wave_x];
+            if (c->pieza != NULL  && c->pieza->tipo != 'R') {
+                printf("La onda expansiva alcanza a '%c' en (%d, %d). -2 HP\n", 
+                       c->pieza->tipo, wave_x + 1, wave_y + 1);
+                
+                aplicar_daño(j, wave_x, wave_y, 2);
+            }
+        }
+    }
+
+    // municion -1
+    j->arsenal.municion_actual[3]--;
+    return true; // turno consumido
+}
 
 void inicializar_armas(Juego *j) {
     // Escopeta
@@ -146,6 +206,8 @@ void inicializar_armas(Juego *j) {
     j->arsenal.disparar[2] = granada;
 
     // Especial
+    j->arsenal.municion_maxima[3] = 2;
+    j->arsenal.municion_actual[3] = 2;
     j->arsenal.disparar[3] = especial;
 }
 
