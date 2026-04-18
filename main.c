@@ -115,7 +115,7 @@ int main(){
             printf("Turno no consumido. Intente de nuevo.\n");
             pausa = true;
         }
-        // Dentro del while(true) en main.c, después de limpiar_enemigos_muertos
+        
         if (juego.enemigos_vivos == 0) {
             if (juego.nivel_actual < 3) {
                 printf("¡NIVEL %d COMPLETADO!\n", juego.nivel_actual);
