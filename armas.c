@@ -35,6 +35,7 @@ bool escopeta(struct Juego *j, int dir_x, int dir_y) {
             target_x = x2_centro;
             target_y = y2_centro + i;
         } else if (dir_x == 0 && dir_y != 0) { // vertical |
+            target_x = x2_centro + i;
             target_y = y2_centro;
         } else { // diagonal " / y \ "
             target_x = x2_centro + (i * (dir_x == 1 ? -1 : 1));
