@@ -161,7 +161,7 @@ bool especial(struct Juego *j, int dir_x, int dir_y) {
     j->jugador->x = target_x;
     j->jugador->y = target_y;
     
-    printf("\n¡ENROQUE OFENSIVO! El Rey se teletransporta a la casilla (%d, %d).\n", target_x + 1, target_y + 1);
+    printf("\n¡TELETRANSPORTADOR DEVASTADOR! El Rey se teletransporta a la casilla (%d, %d).\n", target_x + 1, target_y + 1);
 
     // onda expansiva: Daño 4 casillas adyacentes (Arriba, Abajo, Izquierda, Derecha)
     int adj_dx[] = {0, 0, -1, 1};
