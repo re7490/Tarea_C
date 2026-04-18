@@ -15,6 +15,7 @@ int main(){
     juego.nivel_actual = 1;
     juego.turno_actual = 1;
     juego.turno_enemigos = 0;
+    juego.advertencias_jaque = 0;
     
     juego.t = tablero_crear(12, 12);
     if (!juego.t){
@@ -35,6 +36,9 @@ int main(){
         system("clear");
         //printf("\033[H\033[J");
         tablero_imprimir(&juego);
+        if (verificar_estado_rey(&juego)) {
+            printf("\n¡PELIGRO! Tu casilla actual está bajo amenaza. ¡Estás en riesgo de Jaque!\n");
+        }
 
         printf("En caso de querer salir: 0.\n");
         printf("Ingrese movimiento (WASD/QEZC) o arma (1234): ");

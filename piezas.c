@@ -212,8 +212,81 @@ void mover_enemigos(struct Juego *juego) {
     }
 }
 
-bool verificar_estado_rey(struct Juego *juego){
-    return false;}; /* Revisa si el Rey esta en Jaque */
+bool verificar_estado_rey(struct Juego *juego) {
+    if (!juego || !juego->jugador || !juego->t) return false;
+
+    int kx = juego->jugador->x;
+    int ky = juego->jugador->y;
+    Tablero *t = juego->t;
+
+    // recorremos tablero buscando enemigos
+    for (int y = 0; y < t->H; y++) {
+        for (int x = 0; x < t->W; x++) {
+            Celda *c = (Celda *)t->celdas[y][x];
+            
+            // pieza !=Rey y NULL (es un enemigo)
+            if (c->pieza != NULL && c->pieza->tipo != 'R') {
+                Pieza *p = c->pieza;
+                
+                // dist abs entre enemigo y Rey
+                int dx = abs(p->x - kx);
+                int dy = abs(p->y - ky);
+                
+                if (dx == 0 && dy == 0) continue;
+
+                // PEON
+                if (p->tipo == 'P') {
+                    if (dx <= 1 && dy <= 1) return true; // Jaque
+                }
+                
+                // CABALLO
+                else if (p->tipo == 'C') {
+                    if ((dx == 1 && dy == 2) || (dx == 2 && dy == 1)) return true; // Jaque
+                }
+                
+                // ALFIL, TORRE Y REINA
+                else if (p->tipo == 'A' || p->tipo == 'T' || p->tipo == 'Q') {
+                    
+                    // Reina 4 casillas, Torre y Alfil hasta 3.
+                    int max_dist = (p->tipo == 'Q') ? 4 : 3;
+                    
+                    bool es_diagonal = (dx == dy);
+                    bool es_ortogonal = (dx == 0 || dy == 0);
+                    bool trayectoria_peligrosa = false;
+                    
+                    // posicion Rey coincide con algun mov enemigo
+                    if (p->tipo == 'A' && es_diagonal && dx <= max_dist) trayectoria_peligrosa = true;
+                    if (p->tipo == 'T' && es_ortogonal && (dx <= max_dist || dy <= max_dist)) trayectoria_peligrosa = true;
+                    if (p->tipo == 'Q' && (es_diagonal || es_ortogonal) && (dx <= max_dist || dy <= max_dist)) trayectoria_peligrosa = true;
+                    
+                    if (trayectoria_peligrosa) {
+                        // calculo direccion hacia Rey (1, -1 o 0)
+                        int step_x = (kx > p->x) ? 1 : ((kx < p->x) ? -1 : 0);
+                        int step_y = (ky > p->y) ? 1 : ((ky < p->y) ? -1 : 0);
+                        
+                        int pasos = (dx > dy) ? dx : dy;
+                        bool bloqueado = false;
+                        
+                        // comprobar cada casilla intermedia en la trayectoria
+                        for (int i = 1; i < pasos; i++) {
+                            Celda *intermedia = (Celda *)t->celdas[p->y + i * step_y][p->x + i * step_x];
+                            if (intermedia->pieza != NULL) {
+                                bloqueado = true; // pieza bloquea el ataque
+                                break;
+                            }
+                        }
+                        
+                        // sin bloqueo, el enemigo puede alcanzar al Rey
+                        if (!bloqueado) return true; // Jaque
+                    }
+                }
+            }
+        }
+    }
+    
+    // ningun peligro
+    return false; 
+} /* Revisa si el Rey esta en Jaque */
 
 void spawn_rey(struct Juego *juego) {
     Tablero *t = juego->t;
@@ -252,12 +325,34 @@ bool mover_rey(struct Juego *juego, int delta_x, int delta_y) {
         printf("Movimiento invalido: casilla ocupada.\n");
         return false;
     }
-
-    // hacer mov
-    celda_origen->pieza = NULL;      // vaciar celda actual
-    celda_destino->pieza = juego->jugador; // poner Rey en la nueva celda
+    //simulacion para ver si quedara en jaque mate
+    celda_origen->pieza = NULL;      
+    celda_destino->pieza = juego->jugador; 
+    int old_x = juego->jugador->x;
+    int old_y = juego->jugador->y;
     juego->jugador->x = nuevo_x;
     juego->jugador->y = nuevo_y;
+
+    if (verificar_estado_rey(juego)) {
+        if (juego->advertencias_jaque < 2) {
+            juego->advertencias_jaque++;
+            printf("¡CUIDADO! Esa casilla te pone en riesgo de Jaque. (Advertencia %d/2)\n", juego->advertencias_jaque);
+            
+            // revertir mov
+            juego->jugador->x = old_x;
+            juego->jugador->y = old_y;
+            celda_origen->pieza = juego->jugador;
+            celda_destino->pieza = NULL;
+            
+            return false; // turno no se consume
+        } else {
+            printf("Has ignorado las advertencias. Moviendo a casilla en riesgo...\n");
+            juego->advertencias_jaque = 0; // reiniciar si llega a sobrevivir (pasaria en caso que justo la pieza q amenaza la casilla no se mueva)
+        }
+    } else {
+        // si la casilla es segura, el contador es cero
+        juego->advertencias_jaque = 0; 
+    }
 
     // recargamos Escopeta
     if (juego->arsenal.municion_actual[0] < juego->arsenal.municion_maxima[0]) {
