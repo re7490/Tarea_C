@@ -37,6 +37,7 @@ Los enemigos se moveran tal cual como lo hacen en ajedrez, se mueven maximo 3 en
 La terminal mostrara solo un tablero a la vez, es decir, al ejecutar una accion se limpia la terminal y a su vez se imprimiran los datos del juego y el tablero inmediatamente con la accion realizada.
 Cabe recalcar que se le pedira al jugador presionar otra vez Enter en caso de cualquiera de los siguientes casos:
     - Quiera moverse fuera del tablero
+    - Quiera moverse a una casilla ocupada (movimiento normal, sin contar arma especial)
     - Haga daño a un enemigo
     - Elimine a un enemigo
     - Utilice un arma sin municion

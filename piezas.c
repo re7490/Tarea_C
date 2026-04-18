@@ -45,7 +45,6 @@ void spawn_nivel(struct Juego *juego, int nivel) {
     }
 }
 
-
 void mover_enemigos(struct Juego *juego) {
     Tablero *t = juego->t;
 
@@ -75,11 +74,25 @@ void mover_enemigos(struct Juego *juego) {
             
             if (p->tipo == 'P') {
                 // Peon avanza 1 casilla (recto)
+                //ataque diag
+                for (int dx_ataque = -1; dx_ataque <= 1; dx_ataque += 2) {
+                    int nx = p->x + dx_ataque;
+                    int ny = p->y + 1;
+                    if (nx >= 0 && nx < t->W && ny >= 0 && ny < t->H) {
+                        Celda *c_ataque = (Celda *)t->celdas[ny][nx];
+                        if (c_ataque->pieza != NULL && c_ataque->pieza->tipo == 'R') {
+                            printf("¡El Peón ha capturado al Rey! GAME OVER\n");
+                            exit(0);
+                        }
+                    }
+                }
+
                 int nx = p->x; // misma columna
-                int ny = p->y + ((juego->jugador->y > p->y) ? 1 : (juego->jugador->y < p->y ? -1 : 0));
+                int ny = p->y + 1;
 
                 if (nx >= 0 && nx < t->W && ny >= 0 && ny < t->H) {
                     Celda *dest = (Celda *)t->celdas[ny][nx];
+
                     if (dest->pieza != NULL && dest->pieza->tipo == 'R') {
                         printf("¡El Peón ha capturado al Rey! GAME OVER\n");
                         exit(0);
@@ -236,7 +249,9 @@ bool verificar_estado_rey(struct Juego *juego) {
 
                 // PEON
                 if (p->tipo == 'P') {
-                    if (dx <= 1 && dy <= 1) return true; // Jaque
+                    if (ky == p->y + 1) {
+                        if (dx <= 1) return true;; // Jaque
+                    }   
                 }
                 
                 // CABALLO

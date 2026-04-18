@@ -37,8 +37,8 @@ bool escopeta(struct Juego *j, int dir_x, int dir_y) {
         } else if (dir_x == 0 && dir_y != 0) { // vertical |
             target_y = y2_centro;
         } else { // diagonal " / y \ "
-            target_x = x2_centro + (i * (dir_x == 0 ? 1 : 0));
-            target_y = y2_centro + (i * (dir_y == 0 ? 1 : 0));
+            target_x = x2_centro + (i * (dir_x == 1 ? -1 : 1));
+            target_y = y2_centro + (i * (dir_y == 1 ? 1 : -1));
         }
 
         if (esta_en_rango(j, target_x, target_y)) {
@@ -88,7 +88,6 @@ bool francotirador(struct Juego *j, int dir_x, int dir_y){
 
 
 };
-
 
 bool granada(struct Juego *j, int dir_x, int dir_y) {
     // validamos municion
