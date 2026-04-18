@@ -32,7 +32,8 @@ int main(){
 
     while(true){
 
-        printf("\033[H\033[J");
+        system("clear");
+        //printf("\033[H\033[J");
         tablero_imprimir(&juego);
 
         printf("En caso de querer salir: 0.\n");
@@ -41,6 +42,8 @@ int main(){
         while (getchar() != '\n'); // limpiar buffer
 
         turno_valido = false;
+        bool pausa = false;
+
         char dir;
         int dx = 0, dy = 0;
 
@@ -75,6 +78,8 @@ int main(){
 
                 int indice_arma = input - '1'; 
                 turno_valido = juego.arsenal.disparar[indice_arma](&juego, dx, dy);
+                pausa = true;
+
                 break;
             case '0':
                 printf("¡Saliendo del juego!\n");
@@ -83,13 +88,19 @@ int main(){
                 return 0;
             default:
                 printf("Accion no reconocida.\n");
+                pausa = true;
                 break;
         }
         if (turno_valido) {
             // verificar Rey entro en una casilla comprometida?
 
+            int enemigos_antes = juego.enemigos_vivos;
             // limpiar muertos
             limpiar_enemigos_muertos(&juego);
+
+            if (juego.enemigos_vivos < enemigos_antes) {
+                pausa = true;
+            }
             // mover enemigos
             mover_enemigos(&juego);
                        
@@ -98,6 +109,7 @@ int main(){
             juego.turno_enemigos++;
         } else {
             printf("Turno no consumido. Intente de nuevo.\n");
+            pausa = true;
         }
         // Dentro del while(true) en main.c, después de limpiar_enemigos_muertos
         if (juego.enemigos_vivos == 0) {
@@ -125,11 +137,17 @@ int main(){
                 }
                 
                 printf("Entrando al Nivel %d...\n", juego.nivel_actual);
+                printf("Presiona Enter para continuar...");
+                getchar();
                 continue; 
             } else {
                 printf("¡HAS RECUPERADO TU TRONO! GANASTE EL JUEGO.\n");
                 break; 
             }
+        }
+        if (pausa) { 
+            printf("Presiona Enter para continuar...");
+            getchar();
         }
     }
     tablero_liberar(juego.t);

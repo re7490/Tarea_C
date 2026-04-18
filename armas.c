@@ -101,7 +101,7 @@ bool granada(struct Juego *j, int dir_x, int dir_y) {
     int target_x = j->jugador->x + (dir_x * 3);
     int target_y = j->jugador->y + (dir_y * 3);
 
-    printf("¡Lanzando granada a (%d, %d)!\n", target_x + 1, target_y + 1);
+    printf("¡Lanzando granada a (%d, %d)!\n", target_x + 1, j->t->H - (target_y));
 
     // procesar area de explosion 3x3 centrada en el impacto 
     for (int dy = -1; dy <= 1; dy++) {
@@ -117,7 +117,7 @@ bool granada(struct Juego *j, int dir_x, int dir_y) {
                 if (c->pieza != NULL) {
                     c->pieza->hp -= 2;
                     printf("Explosion daño a %c en (%d, %d).\n", 
-                            c->pieza->tipo, current_x + 1, current_y + 1);
+                            c->pieza->tipo, current_x + 1, j->t->H - (current_y));
                 }
             }
         }

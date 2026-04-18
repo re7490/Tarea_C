@@ -212,7 +212,8 @@ void mover_enemigos(struct Juego *juego) {
     }
 }
 
-bool verificar_estado_rey(struct Juego *juego){return false;}; /* Revisa si el Rey esta en Jaque */
+bool verificar_estado_rey(struct Juego *juego){
+    return false;}; /* Revisa si el Rey esta en Jaque */
 
 void spawn_rey(struct Juego *juego) {
     Tablero *t = juego->t;
