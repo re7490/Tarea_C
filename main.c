@@ -9,6 +9,11 @@
 #include "tablero.h"
 #include "main.h"
 
+
+/**
+ * Funcion principal del programa. Inicializa la semilla aleatoria (permitiendo spawn aleatorio), crea el estado base del Juego y maneja el bucle principal de entrada (WASD/QEZC + 1234). Gestiona el avance de niveles, la destruccion y recreacion de tableros, y finaliza liberando toda la memoria cuando el jugador gana, pierde o sale.
+ * * @return 0 indicando la salida exitosa del programa.
+ */
 int main(){
     srand((unsigned int)time(NULL)); // semilla para aleatoriedad
     Juego juego;
@@ -33,7 +38,7 @@ int main(){
 
     while(true){
 
-        system("clear");
+        system("clear"); // para tener un tablero y HUD a la vez (mayor fluidez)
         //printf("\033[H\033[J");
         tablero_imprimir(&juego);
         if (verificar_estado_rey(&juego)) {
@@ -46,7 +51,7 @@ int main(){
         while (getchar() != '\n'); // limpiar buffer
 
         turno_valido = false;
-        bool pausa = false;
+        bool pausa = false; // si pasa a ser true = "evento" ocurrido u advertenciaa
 
         char dir;
         int dx = 0, dy = 0;
@@ -97,7 +102,8 @@ int main(){
         }
         if (turno_valido) {
 
-            int enemigos_antes = juego.enemigos_vivos;
+            int enemigos_antes = juego.enemigos_vivos; //para poner pausa y mostrar evento de muerte de enemigo
+
             // limpiar muertos
             limpiar_enemigos_muertos(&juego);
 

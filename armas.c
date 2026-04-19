@@ -6,6 +6,14 @@
 #include "armas.h"
 #include "main.h"
 
+
+/**
+ * Dispara la escopeta en la direccion indicada, infligiendo 2 de daño a la primera pieza y 1 de daño en un area conica detras del objetivo.
+ * * @param j Puntero a la estructura principal del Juego.
+ * @param dir_x Direccion de disparo en el eje X.
+ * @param dir_y Direccion de disparo en el eje Y.
+ * @return true si se disparo con exito (consume turno), false si no hay municion.
+ */
 bool escopeta(struct Juego *j, int dir_x, int dir_y) {
     if (j->arsenal.municion_actual[0] <= 0){
         printf("¡Sin municion de escopeta!\n");
@@ -54,6 +62,14 @@ bool escopeta(struct Juego *j, int dir_x, int dir_y) {
     return true;
 }
 
+
+/**
+ * Dispara el rifle francotirador en linea recta infinita. Inflige 3 de daño a la primera pieza que impacta en la trayectoria.
+ * * @param j Puntero a la estructura principal del Juego.
+ * @param dir_x Direccion de disparo en el eje X.
+ * @param dir_y Direccion de disparo en el eje Y.
+ * @return true si se dispara con exito (consume turno), false si no hay municion.
+ */
 bool francotirador(struct Juego *j, int dir_x, int dir_y){
     // validamos municion
     if (j->arsenal.municion_actual[1] <= 0) {
@@ -61,7 +77,7 @@ bool francotirador(struct Juego *j, int dir_x, int dir_y){
         return false;
     }
 
-    // proyectil comienza donde esta el Rey
+    // proyectil casilla inicial
     int cur_x = j->jugador->x + dir_x;
     int cur_y = j->jugador->y + dir_y;
 
@@ -69,12 +85,11 @@ bool francotirador(struct Juego *j, int dir_x, int dir_y){
     while (esta_en_rango(j, cur_x, cur_y)) {
         Celda *c = (Celda *)j->t->celdas[cur_y][cur_x];
 
-        // ¿hay una pieza en esta celda?
+        // ¿hay una pieza en esta casilla?
         if (c->pieza != NULL) {
             printf("IMPACTO!! 3 HP infligidos a %c.\n", c->pieza->tipo);
             c->pieza->hp -= 3; // inflige 3 de daño 
             
-            // Si la pieza muere, se maneja en una funcion de limpieza
             break; 
         }
 
@@ -86,10 +101,16 @@ bool francotirador(struct Juego *j, int dir_x, int dir_y){
     // consumir municion
     j->arsenal.municion_actual[1]--;
     return true;
-
-
 };
 
+
+/**
+ * Lanza una granada a 3 casillas de distancia, generando una explosion en un area de 3x3 que inflige 2 de daño.
+ * * @param j Puntero a la estructura principal del Juego.
+ * @param dir_x Direccion de lanzamiento en el eje X.
+ * @param dir_y Direccion de lanzamiento en el eje Y.
+ * @return true si se lanza con exito (consume turno), false si no hay municion.
+ */
 bool granada(struct Juego *j, int dir_x, int dir_y) {
     // validamos municion
     if (j->arsenal.municion_actual[2] <= 0) {
@@ -97,9 +118,16 @@ bool granada(struct Juego *j, int dir_x, int dir_y) {
         return false; 
     }
 
-    // calculo punto de impacto (exactamente a 3 casillas) 
+    // calculo punto de impacto a 3 casillas
     int target_x = j->jugador->x + (dir_x * 3);
     int target_y = j->jugador->y + (dir_y * 3);
+
+    //fuera tablero, no se hace daño a nadie y pierde granda
+    if (!esta_en_rango(j, target_x, target_y)) {
+        printf("Lanzando granada a.... la lanzaste fuera.... bueno.... perdiste una granada...\n");
+        j->arsenal.municion_actual[2]--;
+        return true;
+    }
 
     printf("¡Lanzando granada a (%d, %d)!\n", target_x + 1, j->t->H - (target_y));
 
@@ -113,7 +141,7 @@ bool granada(struct Juego *j, int dir_x, int dir_y) {
             if (esta_en_rango(j, current_x, current_y)) {
                 Celda *c = (Celda *)j->t->celdas[current_y][current_x];
                 
-                // 2 de daño a todo en el radio 
+                // 2 de daño a todo en el rarip
                 if (c->pieza != NULL) {
                     c->pieza->hp -= 2;
                     printf("Explosion daño a %c en (%d, %d).\n", 
@@ -127,6 +155,14 @@ bool granada(struct Juego *j, int dir_x, int dir_y) {
     return true;
 }
 
+
+/**
+ * Arma Especial (Teletransportador Devastador): Teletransporta al Rey 2 casillas en la direccion elegida, aplastando cualquier pieza en el destino (5 de daño) y generando una onda expansiva adyacente (2 de daño).
+ * * @param j Puntero a la estructura principal del Juego.
+ * @param dir_x Direccion del teletransporte en el eje X.
+ * @param dir_y Direccion del teletransporte en el eje Y.
+ * @return true si se utilizo con exito (consume turno), false en caso de error o sin municion.
+ */
 bool especial(struct Juego *j, int dir_x, int dir_y) {
     // validacion municion
     if (j->arsenal.municion_actual[3] <= 0) {
@@ -140,7 +176,7 @@ bool especial(struct Juego *j, int dir_x, int dir_y) {
 
     // destino dentro tablero?
     if (!esta_en_rango(j, target_x, target_y)) {
-        printf("Movimiento invalido: El destino del Teletransportador está fuera del tablero.\n");
+        printf("Casi te mueres teletransportandote fuera del tablero!!! Menos mal tiene el seguro de ñiños puestoj.\n");
         return false;
     }
 
@@ -148,9 +184,9 @@ bool especial(struct Juego *j, int dir_x, int dir_y) {
     Celda *celda_origen = (Celda *)j->t->celdas[j->jugador->y][j->jugador->x];
     Celda *celda_destino = (Celda *)j->t->celdas[target_y][target_x];
 
-    // casilla de aterrizaje vacia
+    // casilla destino con enemigo
     if (celda_destino->pieza != NULL) {
-        printf("¡IMPACTO DIRECTO! El Rey aplasta a '%c' haciendole 5 de daño.\n", celda_destino->pieza->tipo);
+        printf("¡IMPACTO DIRECTO! El Rey pulveriza a '%c' haciendole 5 de daño.\n", celda_destino->pieza->tipo);
         free(celda_destino->pieza);
         celda_destino->pieza = NULL;
         j->enemigos_vivos--;
@@ -172,7 +208,7 @@ bool especial(struct Juego *j, int dir_x, int dir_y) {
         int wave_x = target_x + adj_dx[i];
         int wave_y = target_y + adj_dy[i];
         
-        // casilla onda expansiva valida y tiene un enemigo
+        // casilla onda expansiva valida (dentro tableri) y tiene un enemigo
         if (esta_en_rango(j, wave_x, wave_y)) {
             Celda *c = (Celda *)j->t->celdas[wave_y][wave_x];
             if (c->pieza != NULL  && c->pieza->tipo != 'R') {
@@ -184,11 +220,16 @@ bool especial(struct Juego *j, int dir_x, int dir_y) {
         }
     }
 
-    // municion -1
     j->arsenal.municion_actual[3]--;
     return true; // turno consumido
 }
 
+
+/**
+ * Configura la municion maxima, municion actual y vincula los punteros a funcion del arreglo disparar[] con las funciones fisicas de cada arma.
+ * * @param j Puntero a la estructura principal del Juego.
+ * @return No devuelve nada.
+ */
 void inicializar_armas(Juego *j) {
     // Escopeta
     j->arsenal.municion_maxima[0] = 2;
@@ -211,21 +252,42 @@ void inicializar_armas(Juego *j) {
     j->arsenal.disparar[3] = especial;
 }
 
+
+/**
+ * Funcion de utilidad para comprobar si las coordenadas (x, y) dadas caen dentro de los limites actuales del tablero.
+ * * @param j Puntero a la estructura principal del Juego.
+ * @param x Coordenada X a evaluar.
+ * @param y Coordenada Y a evaluar.
+ * @return true si la coordenada esta dentro del tablero, false en caso contrario.
+ */
 bool esta_en_rango(Juego *j, int x, int y) {
     return (x >= 0 && x < j->t->W && y >= 0 && y < j->t->H);
 }
 
+
+/**
+ * Reduce la vida de la pieza ubicada en la coordenada (x, y).
+ * * @param j Puntero a la estructura principal del Juego.
+ * @param x Coordenada X de la celda a dañar.
+ * @param y Coordenada Y de la celda a dañar.
+ * @param puntos_daño Cantidad de vida a restar.
+ * @return No devuelve nada.
+ */
 void aplicar_daño(struct Juego *j, int x, int y, int puntos_daño) {
     if (esta_en_rango(j, x, y)) {
         Celda *c = (Celda *)j->t->celdas[y][x];
         if (c->pieza != NULL) {
             c->pieza->hp -= puntos_daño;
-            // agregar logica eliminar pieza si HP <= 0
-            // de manera q decremente enemigos_vivos en el juego
         }
     }
 }
 
+
+/**
+ * Recorre todo el tablero buscando piezas enemigas cuya vida sean menores o iguales a 0, liberando su memoria y disminuyendo el contador de enemigos vivos.
+ * * @param j Puntero a la estructura principal del Juego.
+ * @return No devuelve nada.
+ */
 void limpiar_enemigos_muertos(struct Juego *j) {
     for (int y = 0; y < j->t->H; y++) {
         for (int x = 0; x < j->t->W; x++) {

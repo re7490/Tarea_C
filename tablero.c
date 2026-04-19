@@ -6,7 +6,12 @@
 #include "armas.h"
 #include "main.h"
 
-
+/**
+ * Crea e inicializa dinamicamente la estructura del tablero y sus celdas. Asigna memoria en el heap (triple puntero void***) para la grilla.
+ * * @param ancho El ancho del tablero (cantidad de columnas).
+ * @param alto El alto del tablero (cantidad de filas).
+ * @return Un puntero al Tablero creado, o NULL en caso de error de memoria.
+ */
 struct Tablero* tablero_crear(int ancho, int alto){
     if (ancho <= 0 || alto <= 0) return NULL; // tamaño invalido
     
@@ -38,6 +43,12 @@ struct Tablero* tablero_crear(int ancho, int alto){
     }
     return tablero;
 }
+
+/**
+ * Imprime por consola el estado actual del juego, incluyendo el HUD (nivel, municion, enemigos vivos, turnos) y la grilla del tablero.
+ * * @param juego Puntero a la estructura principal del Juego que contiene el tablero y arsenal.
+ * @return No devuelve nada.
+ */
 void tablero_imprimir(struct Juego *juego){
     if (!juego || !juego->t) return;
 
@@ -50,14 +61,10 @@ void tablero_imprimir(struct Juego *juego){
             juego->turno_enemigos
             );
     printf("Arsenal: [1] Escopeta (%d/%d) [2] Sniper (%d/%d)\n         [3] Granada (%d/%d) [4] Teletransportador Devastador (%d/%d)\n",
-            juego->arsenal.municion_actual[0],
-            juego->arsenal.municion_maxima[0],
-            juego->arsenal.municion_actual[1],
-            juego->arsenal.municion_maxima[1],
-            juego->arsenal.municion_actual[2],
-            juego->arsenal.municion_maxima[2],
-            juego->arsenal.municion_actual[3],
-            juego->arsenal.municion_maxima[3]
+            juego->arsenal.municion_actual[0], juego->arsenal.municion_maxima[0],
+            juego->arsenal.municion_actual[1], juego->arsenal.municion_maxima[1],
+            juego->arsenal.municion_actual[2], juego->arsenal.municion_maxima[2],
+            juego->arsenal.municion_actual[3], juego->arsenal.municion_maxima[3]
             );
     printf("=====================================================\n");
     for (int y = 0; y < t->H; y++){
@@ -76,12 +83,19 @@ void tablero_imprimir(struct Juego *juego){
     }
     // eje X
     printf("   ");
-    for (int x = 0; x < t->W; x++) printf(" %d ", x + 1);
+    for (int x = 0; x < t->W; x++) {
+        if (x < 10) printf(" %d ", x + 1);
+        else printf("%d ", x + 1);
+    }
     printf("\n");
 
 };
 
-
+/**
+ * Libera toda la memoria dinámica reservada para el tablero, incluyendo las piezas que aún queden en él, las celdas, las filas y el arreglo principal.
+ * * @param tablero Puntero al Tablero que se desea liberar.
+ * @return No devuelve nada.
+ */
 void tablero_liberar(struct Tablero *tablero) {
     if (!tablero || !tablero->celdas) return;
 

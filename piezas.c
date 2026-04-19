@@ -7,6 +7,13 @@
 #include "armas.h"
 #include "main.h"
 
+
+/**
+ * Genera y posiciona las piezas enemigas en el tablero de forma aleatoria, dependiendo del nivel actual (tamaño tablero y enemigos).
+ * * @param juego Puntero a la estructura principal del Juego.
+ * @param nivel Entero que representa el nivel actual (1, 2 o 3).
+ * @return No devuelve nada.
+ */
 void spawn_nivel(struct Juego *juego, int nivel) {
     Tablero *t = juego->t;
     int peones = 0, caballos = 0, alfiles = 0, torres = 0, reinas = 0;
@@ -30,7 +37,7 @@ void spawn_nivel(struct Juego *juego, int nivel) {
             p->movido = false;
             
             int x, y;
-            // Peones fila 2, Especiales fila 1
+            // Peones fila 2, Especiales fila 1 (filas de arriba hacia abajo)
             y = (p->tipo == 'P') ? 1 : 0;
             
             // buscar casilla vacia random en fila
@@ -45,13 +52,19 @@ void spawn_nivel(struct Juego *juego, int nivel) {
     }
 }
 
+
+/**
+ * Gestiona el turno de los enemigos, moviendo un maximo de 3 piezas hacia el Rey. Cada pieza evalua su regla de movimiento para acercarse e intentar capturarlo.
+ * * @param juego Puntero a la estructura principal del Juego.
+ * @return No devuelve nada.
+ */
 void mover_enemigos(struct Juego *juego) {
     Tablero *t = juego->t;
 
-    // flags mov a falso y ver quiene se pueden mover
     Pieza *enemigos_disponibles[100];
     int contador_enemigos = 0;
 
+    // recorrer tableroo y marcar q la pieza no se ha movido, el flago evita que las piezas se muevan x todo el tablero en el mismno tueno, haciendo imposible pasar el 1er turno
     for (int y = 0; y < t->H; y++) {
         for (int x = 0; x < t->W; x++) {
             Celda *c = (Celda *)t->celdas[y][x];
@@ -225,6 +238,12 @@ void mover_enemigos(struct Juego *juego) {
     }
 }
 
+
+/**
+ * Evalua si alguna pieza enemiga tiene en su rango de ataque inmediato la casilla actual en la que se encuentra el Rey.
+ * * @param juego Puntero a la estructura principal del Juego.
+ * @return true si el Rey esta Jaque, false en caso contrario.
+ */
 bool verificar_estado_rey(struct Juego *juego) {
     if (!juego || !juego->jugador || !juego->t) return false;
 
@@ -303,6 +322,12 @@ bool verificar_estado_rey(struct Juego *juego) {
     return false; 
 } /* Revisa si el Rey esta en Jaque */
 
+
+/**
+ * Instancia al Rey y lo posiciona en una columna aleatoria dentro de la ultima fila del tablero (excluyendo las esquinas).
+ * * @param juego Puntero a la estructura principal del Juego.
+ * @return No devuelve nada.
+ */
 void spawn_rey(struct Juego *juego) {
     Tablero *t = juego->t;
     
@@ -320,6 +345,14 @@ void spawn_rey(struct Juego *juego) {
     c->pieza = juego->jugador; 
 }
 
+
+/**
+ * Procesa el intento de movimiento del jugador en el tablero, comprobando limites, colisiones, estados de jaque y recarga de la escopeta.
+ * * @param juego Puntero a la estructura principal del Juego.
+ * @param delta_x Dirección del movimiento en el eje X (-1, 0, 1).
+ * @param delta_y Dirección del movimiento en el eje Y (-1, 0, 1).
+ * @return true si el movimiento fue exitoso (consume turno), false si fue invslido.
+ */
 bool mover_rey(struct Juego *juego, int delta_x, int delta_y) {
     // calcular nueva posicion
     int nuevo_x = juego->jugador->x + delta_x;
