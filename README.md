@@ -16,7 +16,7 @@ Si el jugador es eliminado por las piezas antes de cumplir el objetivo, perdera.
 Para el correcto funcionamiento del programa (compilación y ejecución), todos los archivos adjuntos (.h, .c y Makefile) a este README deben estar en la misma carpeta, además de ser operado en Linux Debian. 
 Luego, abra la terminal dentro de la misma carpeta y ejecute lo siguiente:
     gcc --version
-    make --versión
+    make --version
 
 En caso que alguno de estos no muestre versión haga lo siguiente (caso contrario ignore esto):
     sudo apt update
