@@ -130,7 +130,7 @@ bool granada(struct Juego *j, int dir_x, int dir_y) {
 bool especial(struct Juego *j, int dir_x, int dir_y) {
     // validacion municion
     if (j->arsenal.municion_actual[3] <= 0) {
-        printf("¡Sin municion del Enroque Ofensivo!\n");
+        printf("¡Sin municion del Teletransportador Devastador!\n");
         return false;
     }
 
@@ -140,7 +140,7 @@ bool especial(struct Juego *j, int dir_x, int dir_y) {
 
     // destino dentro tablero?
     if (!esta_en_rango(j, target_x, target_y)) {
-        printf("Movimiento invalido: El destino del Enroque está fuera del tablero.\n");
+        printf("Movimiento invalido: El destino del Teletransportador está fuera del tablero.\n");
         return false;
     }
 

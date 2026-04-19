@@ -43,7 +43,7 @@ void tablero_imprimir(struct Juego *juego){
 
     Tablero *t = juego->t;
     
-    printf("NIVEL: %d  |  Enemigos vivos: %d \nTurno: %d | Turno enemigos: %d\n",
+    printf("NIVEL: %d  |  Enemigos vivos: %d \nTurno: %d  |  Turno enemigos: %d\n",
             juego->nivel_actual,
             juego->enemigos_vivos,
             juego->turno_actual,
