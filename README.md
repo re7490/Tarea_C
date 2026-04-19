@@ -8,8 +8,7 @@ El programa adjunto implementa una versión simplificada de Shotgun King (juegaz
 En este, el jugador controla al Rey, quien, debido a ser un tirano durante varios años, las piezas de su reino se revelan y lo destronan.
 Sin mas opciones, el Rey se esconde en su boveda, donde posee varias armas. Decidido a retomar el control de su reino, toma su armamento y sale a recuperar su trono.
 
-El juego es por turnos y consta de 3 niveles, una vez el jugador elimine a los enemigos en el tablero, avanzara de nivel.
-Una vez llegado al nivel 3, el jugador debera eliminar a la reina para ganar el juego.
+El juego es por turnos y consta de 3 niveles, una vez el jugador elimine a los enemigos en el tablero, avanzara de nivel, asi hasta teminar el nivel 3.
 Si el jugador es eliminado por las piezas antes de cumplir el objetivo, perdera. 
 
 
@@ -59,7 +58,7 @@ El HUD del juego muestra lo siguiente:
     -Solicitacion de Input
     -Mensajes de eventos
 
-Para ganar, el jugador debera avanzar eliminando a todos los enemigos de los niveles y eliminar a la Reina en el ultimo Nivel.
+Para ganar, el jugador debera avanzar eliminando a todos los enemigos de los niveles.
 Si es eliminado por alguna pieza antes de lo anterior, perdera.
 
 Consideraciones:
@@ -76,7 +75,7 @@ Cabe recalcar que se le pedira al jugador presionar otra vez Enter en caso de cu
 
 En caso que un enemigo quiera avanzar hacia el Rey por su ruta mas optima, y resulte que la casilla esta ocupada por otro enemigo, el enemigo pasara a usar otra ruta  con tal de alcanzar al Rey.
 
-Una vez todos los enemigos del tablero hayan sido eliminado, el jugador avanzara de nivel. En caso de estar en el ultimo nivel y eliminar a la Reina, el jugador ganara automaticamente.
+Una vez todos los enemigos del tablero hayan sido eliminado, el jugador avanzara de nivel, llegado al nivel 3 y eliminados los enemigos, el juego terminara y el jugador ganara
 
 *Si el Rey quiere moverse a una casilla, y resulta que existe la posibilidad que un enemigo se mueva a esa misma casilla (haciendo jaque mate al jugador), se le notificara al jugador de esto y no hara el movimiento, diciendole que estara en riego de perder y pidiendole otra vez un input. Esto sucedera un total de dos veces, si el jugador aun asi insiste en ir a esa casilla, el juego lo permitira. (inspirado en el juego original). 
 *Solo aplica si el Rey quiere hacer un movimiento

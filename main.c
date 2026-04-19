@@ -96,34 +96,10 @@ int main(){
                 break;
         }
         if (turno_valido) {
-            // verificar Rey entro en una casilla comprometida?
 
             int enemigos_antes = juego.enemigos_vivos;
             // limpiar muertos
             limpiar_enemigos_muertos(&juego);
-
-            //solo nivel 3
-            if (juego.nivel_actual == 3) {
-                bool reina_viva = false;
-                for (int y = 0; y < juego.t->H; y++) {
-                    for (int x = 0; x < juego.t->W; x++) {
-                        Celda *c = (Celda *)juego.t->celdas[y][x];
-                        // encontrar Reina = true
-                        if (c->pieza != NULL && c->pieza->tipo == 'Q') {
-                            reina_viva = true;
-                            break;
-                        }
-                    }
-                    if (reina_viva) break;
-                }
-                
-                // Reina muerta = Victory
-                if (!reina_viva) {
-                    printf("\n¡IMPACTO LETAL! LA REINA HA CAÍDO...\n");
-                    printf("¡HAS RECUPERADO TU TRONO! GANASTE EL JUEGO.\n");
-                    break;
-                }
-            }
 
             if (juego.enemigos_vivos < enemigos_antes) {
                 pausa = true;
