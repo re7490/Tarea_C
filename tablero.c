@@ -117,5 +117,6 @@ void tablero_liberar(struct Tablero *tablero) {
     }
     // liberamos el arreglo de filas (void ***) fuera del bucle
     free(tablero->celdas);
+    free(tablero);
     
 } /* debe limpiar la memoria heap */

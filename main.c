@@ -93,7 +93,6 @@ int main(){
             case '0':
                 printf("¡Saliendo del juego!\n");
                 tablero_liberar(juego.t);
-                free(juego.jugador);
                 return 0;
             default:
                 printf("Accion no reconocida.\n");
@@ -160,6 +159,5 @@ int main(){
         }
     }
     tablero_liberar(juego.t);
-    free(juego.jugador);
     return 0;
 };

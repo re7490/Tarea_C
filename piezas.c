@@ -3,7 +3,7 @@
 #include <stdbool.h>
 #include <math.h>
 #include "piezas.h"
-#include "piezas.h"
+#include "tablero.h"
 #include "armas.h"
 #include "main.h"
 
@@ -95,6 +95,7 @@ void mover_enemigos(struct Juego *juego) {
                         Celda *c_ataque = (Celda *)t->celdas[ny][nx];
                         if (c_ataque->pieza != NULL && c_ataque->pieza->tipo == 'R') {
                             printf("¡El Peón ha capturado al Rey! GAME OVER\n");
+                            tablero_liberar(juego->t);
                             exit(0);
                         }
                     }
@@ -108,6 +109,7 @@ void mover_enemigos(struct Juego *juego) {
 
                     if (dest->pieza != NULL && dest->pieza->tipo == 'R') {
                         printf("¡El Peón ha capturado al Rey! GAME OVER\n");
+                        tablero_liberar(juego->t);
                         exit(0);
                     }
                     if (dest->pieza == NULL) {
@@ -135,7 +137,8 @@ void mover_enemigos(struct Juego *juego) {
                     if (sig_c->pieza != NULL) {
                         if (sig_c->pieza->tipo == 'R') {
                             printf("¡La Torre ha capturado al Rey! GAME OVER.\n");
-                            exit(0); 
+                            tablero_liberar(juego->t);
+                            exit(0);
                         }
                         break; 
                     }
@@ -162,7 +165,8 @@ void mover_enemigos(struct Juego *juego) {
                     if (sig_c->pieza != NULL) {
                         if (sig_c->pieza->tipo == 'R') {
                             printf("¡El Alfil ha capturado al Rey! GAME OVER.\n");
-                            exit(0); 
+                            tablero_liberar(juego->t);
+                            exit(0);
                         }
                         break; 
                     }
@@ -189,6 +193,7 @@ void mover_enemigos(struct Juego *juego) {
                         Celda *c_dest = (Celda *)t->celdas[ny][nx];
                         if (c_dest->pieza != NULL && c_dest->pieza->tipo == 'R') {
                             printf("¡El Caballo ha capturado al Rey! GAME OVER.\n");
+                            tablero_liberar(juego->t);
                             exit(0);
                         }
                         if (c_dest->pieza == NULL) {
@@ -220,7 +225,8 @@ void mover_enemigos(struct Juego *juego) {
                     if (sig_c->pieza != NULL) {
                         if (sig_c->pieza->tipo == 'R') {
                             printf("¡LA REINA HA CAPTURADO AL REY! GAME OVER.\n");
-                            exit(0); 
+                            tablero_liberar(juego->t);
+                            exit(0);
                         }
                         break; 
                     }
